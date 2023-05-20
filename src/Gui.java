@@ -8,7 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-
+import java.lang.InterruptedException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -20,10 +20,21 @@ public class Gui extends JFrame implements ActionListener{
     int cont= 0;
 
     //SECONDO FRAME
-    JLabel l1, gio1, gio2, numero;
+    JLabel l1, gio1, gio2, numeroo;
 
     JLabel ambo, terna, quaterna, cinquina;
 
+    JLabel ambo2, terna2, quaterna2, cinquina2;
+
+    JLabel premi1, premi2;
+
+    int contatoreVY1= 815, contatoreVY2= 815;
+    int[] temporAmbo1= new int[3], temporTerna1= new int[3], temporQuaterna1= new int[3];
+    int[] temporAmbo2= new int[3], temporTerna2= new int[3], temporQuaterna2= new int[3];
+    int contTombola1= 0, contTombola2= 0;
+    boolean amboV= true, ternaV= true, quaternaV= true, cinquinaV= true;
+    JFrame risultatiTombola;
+    JLabel tombolaa, tombolaaa, G1, G2;
 
     JLabel a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21,a22,a23,a24,a25,a26,a27,a28,a29,a30,a31,a32,a33,a34,a35,a36,a37,a38,a39,a40,
             a41,a42,a43,a44,a45,a46,a47,a48,a49,a50,a51,a52,a53,a54,a55,a56,a57,a58,a59,a60,a61,a62,a63,a64,a65,a66,a67,a68,a69,a70,a71,a72,a73,a74,a75,a76,a77,a78,a79,a80,
@@ -58,6 +69,9 @@ public class Gui extends JFrame implements ActionListener{
     JFrame inizio;
     JLabel titolo, lp;
     JButton gioca;
+
+    int[] contaNum1= new int[3];
+    int[] contaNum2= new int[3];
 
     Gui(){
         font1= new Font("Bodoni MT", Font.PLAIN, 50);
@@ -148,7 +162,6 @@ public class Gui extends JFrame implements ActionListener{
                 panel[i][j].setBounds(contXP, contY, 80, 50);
                 panel[i][j].setFont(font2);
                 panel[i][j].setBackground(sfondo);
-                //panel[i][j].add(tabella[i][j]);
                 this.add(panel[i][j]);
                 contX += 80;
                 contXP+=80;
@@ -177,11 +190,11 @@ public class Gui extends JFrame implements ActionListener{
         estrai.addActionListener(this);
 
 
-        numero= new JLabel("n°:");
-        numero.setBounds(695, 730, 100, 50);
-        numero.setFont(font2);
-        numero.setForeground(titoli);
-        this.add(numero);
+        numeroo= new JLabel("n°:");
+        numeroo.setBounds(695, 730, 100, 50);
+        numeroo.setFont(font2);
+        numeroo.setForeground(titoli);
+        this.add(numeroo);
 
         estrazione= new JTextArea();
         estrazione.setBounds(725, 743, 28, 30);
@@ -217,6 +230,50 @@ public class Gui extends JFrame implements ActionListener{
         cinquina.setForeground(new Color(128, 0, 255));
         this.add(cinquina);
 
+        premi1= new JLabel("Premi assegnati:");
+        premi1.setBounds(235, 790, 150, 50);
+        premi1.setFont(font2);
+        premi1.setForeground(titoli);
+        this.add(premi1);
+
+        premi2= new JLabel("Premi assegnati:");
+        premi2.setBounds(1097, 790, 150, 50);
+        premi2.setFont(font2);
+        premi2.setForeground(titoli);
+        this.add(premi2);
+
+        ambo2= new JLabel("ambo");
+        ambo2.setFont(font2);
+        ambo2.setForeground(new Color(204, 82, 0));
+        ambo2.setVisible(false);
+        this.add(ambo2);
+
+        terna2= new JLabel("terna");
+        terna2.setFont(font2);
+        terna2.setForeground(new Color(36, 143, 36));
+        terna2.setVisible(false);
+        this.add(terna2);
+
+        quaterna2= new JLabel("quaterna");
+        quaterna2.setFont(font2);
+        quaterna2.setForeground(new Color(134, 89, 45));
+        quaterna2.setVisible(false);
+        this.add(quaterna2);
+
+        cinquina2= new JLabel("cinquina");
+        cinquina2.setFont(font2);
+        cinquina2.setForeground(new Color(128, 0, 255));
+        cinquina2.setVisible(false);
+        this.add(cinquina2);
+
+
+        tombolaa= new JLabel("TOMBOLA!");
+        tombolaa.setBounds(646, 707, 250, 50);
+        tombolaa.setFont(font4);
+        tombolaa.setForeground(Color.RED);
+        tombolaa.setVisible(false);
+        this.add(tombolaa);
+
         l= new JLabel();
         this.add(l);
 
@@ -237,6 +294,7 @@ public class Gui extends JFrame implements ActionListener{
         }
 
         if(e.getSource() == estrai) {
+
             String numero= "";
             numero= numero + numEstratti[cont];
             int numJ= numEstratti[cont];
@@ -251,6 +309,7 @@ public class Gui extends JFrame implements ActionListener{
                     repaint();
                 }
             }
+
             boolean tab1, tab2;
             for(int i= 0; i < 3; i++) {
                 for(int j= 0; j < 9; j++) {
@@ -259,13 +318,118 @@ public class Gui extends JFrame implements ActionListener{
                     if(tab1 == false && numJ == Integer.parseInt(tabellaG1[i][j].getText())) {
                         tabellaGio1[i][j].setBackground(bottoni);
                         tabellaG1[i][j].setForeground(sfondo);
+                        contaNum1[i]++;
+                        contTombola1++;
                     }
                     if(tab2 == false && numJ == Integer.parseInt(tabellaG2[i][j].getText())) {
                         tabellaGio2[i][j].setBackground(bottoni);
                         tabellaG2[i][j].setForeground(sfondo);
+                        contaNum2[i]++;
+                        contTombola2++;
                     }
                 }
             }
+
+            for(int z= 0; z < 3; z++) {
+                //AMBO
+                if(contaNum1[z]==2 && amboV == true && contaNum2[z]!=2) {
+                    amboV= false;
+                    ambo.setVisible(false);
+                    ambo2.setBounds(283, contatoreVY1, 100, 50);
+                    ambo2.setVisible(true);
+                    contatoreVY1+=25;
+                    temporAmbo1[z]++;
+                }else if(contaNum1[z]!=2 && amboV == true && contaNum2[z]==2) {
+                    amboV= false;
+                    ambo.setVisible(false);
+                    ambo2.setBounds(1145, contatoreVY2, 100, 50);
+                    ambo2.setVisible(true);
+                    contatoreVY2+=25;
+                    temporAmbo2[z]++;
+                }else if(contaNum1[z]==2 && amboV == true && contaNum2[z]==2) {
+                    amboV= false;
+                    ambo.setVisible(false);
+                    ambo2.setVisible(true);
+                }
+
+                //TERNA
+                if(contaNum1[z]==3 && ternaV == true && contaNum2[z]!=3 && temporAmbo1[z]==0) {
+                    ternaV= false;
+                    terna.setVisible(false);
+                    terna2.setBounds(283, contatoreVY1, 100, 50);
+                    terna2.setVisible(true);
+                    contatoreVY1+=25;
+                    temporTerna1[z]++;
+                }else if(contaNum1[z]!=3 && ternaV == true && contaNum2[z]==3 && temporAmbo2[z]==0) {
+                    ternaV= false;
+                    terna.setVisible(false);
+                    terna2.setBounds(1145, contatoreVY2, 100, 50);
+                    terna2.setVisible(true);
+                    contatoreVY2+=25;
+                    temporTerna2[z]++;
+                }else if(contaNum1[z]==3 && ternaV == true && contaNum2[z]==3) {
+                    ternaV= false;
+                    terna.setVisible(false);
+                    terna2.setVisible(true);
+                }
+
+                //QUATERNA
+                if(contaNum1[z]==4 && quaternaV == true && contaNum2[z]!=4 && temporTerna1[z]==0) {
+                    quaternaV= false;
+                    quaterna.setVisible(false);
+                    quaterna2.setBounds(283, contatoreVY1, 100, 50);
+                    quaterna2.setVisible(true);
+                    contatoreVY1+=25;
+                    temporQuaterna1[z]++;
+                }else if(contaNum1[z]!=4 && quaternaV == true && contaNum2[z]==4 && temporTerna1[z]==0) {
+                    quaternaV= false;
+                    quaterna.setVisible(false);
+                    quaterna2.setBounds(1145, contatoreVY2, 100, 50);
+                    quaterna2.setVisible(true);
+                    contatoreVY2+=25;
+                    temporQuaterna2[z]++;
+                }else if(contaNum1[z]==4 && quaternaV == true && contaNum2[z]==4) {
+                    quaternaV= false;
+                    quaterna.setVisible(false);
+                    quaterna2.setVisible(true);
+                }
+
+                //CINQUINA
+                if(contaNum1[z]==5 && cinquinaV == true && contaNum2[z]!=5 && temporQuaterna1[z]==0) {
+                    cinquinaV= false;
+                    cinquina.setVisible(false);
+                    cinquina2.setBounds(283, contatoreVY1, 100, 50);
+                    cinquina2.setVisible(true);
+                }else if(contaNum1[z]!=5 && cinquinaV == true && contaNum2[z]==5 && temporQuaterna2[z]==0) {
+                    cinquinaV= false;
+                    cinquina.setVisible(false);
+                    cinquina2.setBounds(1145, contatoreVY2, 100, 50);
+                    cinquina2.setVisible(true);
+                }else if(contaNum1[z]==5 && cinquinaV == true && contaNum2[z]==5) {
+                    cinquinaV= false;
+                    cinquina.setVisible(false);
+                    cinquina2.setVisible(true);
+                }
+
+                //TOMBOLA
+                if(contTombola1 == 15 && contTombola2 != 15) {
+                    estrai.setVisible(false);
+                    numeroo.setVisible(false);
+                    estrazione.setVisible(false);
+                    tombolaa.setVisible(true);
+                }else if(contTombola1 != 15 && contTombola2 == 15) {
+                    estrai.setVisible(false);
+                    numeroo.setVisible(false);
+                    estrazione.setVisible(false);
+                    tombolaa.setVisible(true);
+                }else if(contTombola1 == 15 && contTombola2 == 15) {
+                    estrai.setVisible(false);
+                    numeroo.setVisible(false);
+                    estrazione.setVisible(false);
+                    tombolaa.setVisible(true);
+                }
+            }
+
             repaint();
         }
     }
@@ -475,7 +639,6 @@ public class Gui extends JFrame implements ActionListener{
                 pan[k][s].setBounds(contXP, tempY, 50, 40);
                 pan[k][s].setFont(font2);
                 pan[k][s].setBackground(sfondo);
-                //panel[k][s].add(tabellaL[k][s]);
                 this.add(pan[k][s]);
 
                 contatore= "";
